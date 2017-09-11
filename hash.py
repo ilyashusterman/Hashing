@@ -26,17 +26,23 @@ def main():
                         help='Simulate, do not create AppNexus objects',
                         action='store_true')
     args = parser.parse_args()
-    encrypt_only()
+    # encrypt_only()
     # set password
     password = 'mysecretpassword'
     # set message
     message = 'secretmessage'
-
-    encrypt = generate(message, password, salt='static_salt',
+    salt = 'static_salt'
+    encrypt = generate(message, password, salt=salt,
                        action='encrypt')
-    print(encrypt.decode())
     decrypt = generate(encrypt, password, salt='static_salt', action='decrypt')
-    print(decrypt.decode())
+    output_encryption = {
+        'message': message,
+        'password': password,
+        'salt': salt,
+        'key': encrypt.decode(),
+        'decoded_message': decrypt.decode()
+                         }
+    print(json.dumps(output_encryption, indent=2))
 
 
 def encrypt_only():
