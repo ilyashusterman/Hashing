@@ -33,7 +33,7 @@ def main():
     message = 'secretmessage'
     salt = 'static_salt'
     encrypt = generate(message, password, salt=salt,
-                       action='encrypt')
+                           action='encrypt')
     decrypt = generate(encrypt, password, salt='static_salt', action='decrypt')
     output_encryption = {
         'message': message,
@@ -55,18 +55,20 @@ def encrypt_only():
 
 
 def generate(message, password, salt, action):
+    message = message.encode()
     kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32,
                      salt=salt.encode(),
                      iterations=100000, backend=default_backend())
     key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
     f = Fernet(key)
-
-    if action is 'encrypt':
-        encrypted = f.encrypt(message.encode())
-        return encrypted
-    elif action is 'decrypt':
+    if action == 'encrypt':
+        encrypted = f.encrypt(message)
+        answer = {'key': encrypted.decode()}
+        return answer
+    elif action == 'decrypt':
         decrypted = f.decrypt(message)
-        return decrypted
+        answer = {'message': decrypted.decode()}
+        return answer
 
 
 if __name__ == '__main__':
