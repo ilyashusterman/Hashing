@@ -44,9 +44,18 @@ class App extends Component {
             <h1>Hash generator</h1>
             <h4>Generate everything with 3 layers of protection!</h4>
           </div>
-          <p id="failure">Oopsie...message not sent.</p>
-          <p id="success">Your message was sent successfully. Thank you!</p>
-
+            <div>
+                <h4>You can also use this generator with the api</h4>
+                <h5>url: {window.location.href}hash</h5>
+                <h5>Post request:
+                </h5>
+                    <h5>{JSON.stringify({
+                    "message": "example",
+                    "password": "example",
+                    "phrase": "example",
+                    "action": "encrypt"
+                })}</h5>
+            </div>
           <form onSubmit={this.handleHash.bind(this)}>
             <div>
               <label for="name">
