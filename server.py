@@ -13,7 +13,7 @@ from tornado_json import schema
 from hash import generate
 
 STATIC_PATH = Path(Path(__file__).parent, 'static')
-WORKER_PATH = Path(Path(__file__).parent, 'service-worker.js')
+WORKER_PATH = Path(Path(__file__).parent, '')
 
 
 class MainHandler(tornado.web.RequestHandler):

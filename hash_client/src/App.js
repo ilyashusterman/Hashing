@@ -19,7 +19,6 @@ class App extends Component {
     handleHash(event){
         event.preventDefault();
         let self = this;
-        console.log('message='+this.message.value);
         axios.post('/hash', {
             message: this.message.value,
             password: this.password.value,
@@ -27,13 +26,13 @@ class App extends Component {
             action: this.action.value
         })
             .then(function (response) {
-                console.log(response);
+                // console.log(response);
                 self.setState({
                     hash: JSON.stringify(response.data)
                 });
             })
             .catch(function (error) {
-                console.log(error.response.data);
+                // console.log(error.response.data);
                 self.setState({errorMessage: error.response.data});
             });
     }
