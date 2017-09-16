@@ -63,10 +63,10 @@ class HashHandler(APIHandler):
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
-    # def prepare(self):
-    #     if ('X-Forwarded-Proto' in self.request.headers and
-    #                 self.request.headers['X-Forwarded-Proto'] != 'https'):
-    #         self.redirect(re.sub(r'^([^:]+)', 'https', self.request.full_url()))
+    def prepare(self):
+        if ('X-Forwarded-Proto' in self.request.headers and
+                    self.request.headers['X-Forwarded-Proto'] != 'https'):
+            self.redirect(re.sub(r'^([^:]+)', 'https', self.request.full_url()))
 
     # @schema.validate(input_schema={'type': 'object',
     #                                'properties': {
