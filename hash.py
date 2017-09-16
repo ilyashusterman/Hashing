@@ -4,7 +4,7 @@ import hmac
 import json
 import logging
 import base64
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -22,26 +22,27 @@ def encode(key, string):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dry-run',
-                        help='Simulate, do not create AppNexus objects',
-                        action='store_true')
+    parser.add_argument('--password', default='mysecretpassword',
+                        help='Amount of days for optimization')
+    parser.add_argument('--phrase', default='static_salt',
+                        help='Amount of days for optimization')
+    parser.add_argument('--message', default='secretmessage',
+                        help='Amount of days for optimization')
     args = parser.parse_args()
-    # encrypt_only()
-    # set password
-    password = 'mysecretpassword'
-    # set message
-    message = 'secretmessage'
-    salt = 'static_salt'
+    password = args.password
+    message = args.message
+    salt = args.phrase
     encrypt = generate(message, password, salt=salt,
-                           action='encrypt')
-    decrypt = generate(encrypt, password, salt='static_salt', action='decrypt')
+                       action='encrypt')
+    decrypt = generate(encrypt['key'], password, salt='static_salt',
+                       action='decrypt')
     output_encryption = {
         'message': message,
         'password': password,
         'salt': salt,
-        'key': encrypt.decode(),
-        'decoded_message': decrypt.decode()
-                         }
+        'key': encrypt,
+        'decoded_message': decrypt
+    }
     print(json.dumps(output_encryption, indent=2))
 
 
@@ -50,7 +51,6 @@ def encrypt_only():
                         'ilyailyua'.encode(),
                         hashlib.sha256)
     key = hash_key.hexdigest()
-    # print(hmac.compare_digest(key))
     print(json.dumps({'key': key}, indent=2))
 
 
@@ -66,8 +66,11 @@ def generate(message, password, salt, action):
         answer = {'key': encrypted.decode()}
         return answer
     elif action == 'decrypt':
-        decrypted = f.decrypt(message)
-        answer = {'message': decrypted.decode()}
+        try:
+            decrypted = f.decrypt(message)
+            answer = {'message': decrypted.decode()}
+        except InvalidToken as e:
+            answer = {'error': 'invalid key to decrypt '}
         return answer
 
 

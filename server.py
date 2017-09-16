@@ -6,6 +6,7 @@ from string import Template
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
+from tornado_json.requesthandlers import APIHandler
 from unipath import Path
 from tornado_json import schema
 
@@ -52,7 +53,7 @@ class MainHandler(tornado.web.RequestHandler):
             self.write(html)
 
 
-class HashHandler(tornado.web.RequestHandler):
+class HashHandler(APIHandler):
     HASH_ACTIONS = ['encrypt', 'decrypt']
 
     def set_default_headers(self):
@@ -74,17 +75,45 @@ class HashHandler(tornado.web.RequestHandler):
     #                                    'phrase': {'type': 'string'},
     #                                    'action': {'type': 'string'}
     #                                }})
+
+    @schema.validate(
+        input_schema={
+            'title': 'HashObject',
+            'type': 'object',
+            'properties': {
+               'message': {'type': 'string'},
+               'password': {'type': 'string'},
+               'phrase': {'type': 'string'},
+               'action': {'type': 'string',
+                          'enum': ['decrypt', 'encrypt']}
+            },
+            'required': ['message', 'password',
+                         'phrase', 'action']
+        },
+        input_example={
+            'message': 'Very Important Post-It Note',
+            'password': 'Equally important message',
+            'phrase': '1221',
+            'action': 'decrypt'
+        },
+        output_schema={
+            'type': 'object',
+            'properties': {
+                'key': {'type': 'string'}
+            }
+        },
+        output_example={
+            'key': 'Very Important Post-It Note was posted.'
+        },
+    )
     def post(self):
         client_obj = json.loads(self.request.body)
         print(client_obj)
-        if client_obj['action'] not in self.HASH_ACTIONS:
-            response_obj = {'error': 'bad action requested'}
-        else:
-            response_obj = generate(message=client_obj['message'],
-                                    password=client_obj['password'],
-                                    salt=client_obj['phrase'],
-                                    action=client_obj['action'])
-        self.write(json.dumps(response_obj))
+        response_obj = generate(message=client_obj['message'],
+                                password=client_obj['password'],
+                                salt=client_obj['phrase'],
+                                action=client_obj['action'])
+        return response_obj
 
 
 def main():
