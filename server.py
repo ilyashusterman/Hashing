@@ -68,14 +68,6 @@ class HashHandler(APIHandler):
                     self.request.headers['X-Forwarded-Proto'] != 'https'):
             self.redirect(re.sub(r'^([^:]+)', 'https', self.request.full_url()))
 
-    # @schema.validate(input_schema={'type': 'object',
-    #                                'properties': {
-    #                                    'message': {'type': 'string'},
-    #                                    'password': {'type': 'string'},
-    #                                    'phrase': {'type': 'string'},
-    #                                    'action': {'type': 'string'}
-    #                                }})
-
     @schema.validate(
         input_schema={
             'title': 'HashObject',
