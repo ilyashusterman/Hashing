@@ -28,12 +28,13 @@ class App extends Component {
             .then(function (response) {
                 // console.log(response);
                 self.setState({
-                    hash: JSON.stringify(response.data)
+                    hash: JSON.stringify(response.data['data'])
                 });
             })
             .catch(function (error) {
                 // console.log(error.response.data);
-                self.setState({errorMessage: error.response.data});
+                self.setState({errorMessage: error.response.data,
+                hash: JSON.stringify(error.response.data)});
             });
     }
 
