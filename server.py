@@ -60,8 +60,8 @@ class HashHandler(APIHandler):
     def setup(cls):
         logging.basicConfig(level=logging.INFO)
         logger = logging.getLogger('hashing')
-        logger.propagate = False
-        # logger.setLevel(logging.INFO)
+        # logger.propagate = False
+        logger.setLevel(logging.INFO)
         handler = logging.StreamHandler()
         logger.addHandler(handler)
         return logger
