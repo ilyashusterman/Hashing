@@ -100,7 +100,8 @@ class HashHandler(APIHandler):
     )
     def post(self):
         client_obj = json.loads(self.request.body)
-        print(client_obj)
+        logger = logging.getLogger('generate-hash')
+        logger.info('Request body value={}'.format(client_obj))
         response_obj = generate(message=client_obj['message'],
                                 password=client_obj['password'],
                                 salt=client_obj['phrase'],
