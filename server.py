@@ -25,16 +25,6 @@ class MainHandler(tornado.web.RequestHandler):
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
-    @classmethod
-    def setup(cls):
-        logging.basicConfig(level=logging.WARNING)
-        logger = logging.getLogger('hashing')
-        logger.propagate = False
-        logger.setLevel(logging.WARNING)
-        handler = logging.StreamHandler()
-        logger.addHandler(handler)
-        return logger
-
     def prepare(self):
         if ('X-Forwarded-Proto' in self.request.headers and
                     self.request.headers['X-Forwarded-Proto'] != 'https'):
@@ -55,6 +45,16 @@ class MainHandler(tornado.web.RequestHandler):
 
 class HashHandler(APIHandler):
     HASH_ACTIONS = ['encrypt', 'decrypt']
+
+    @classmethod
+    def setup(cls):
+        logging.basicConfig(level=logging.WARNING)
+        logger = logging.getLogger('hashing')
+        logger.propagate = False
+        logger.setLevel(logging.WARNING)
+        handler = logging.StreamHandler()
+        logger.addHandler(handler)
+        return logger
 
     def set_default_headers(self):
         super(HashHandler, self).set_default_headers()
@@ -100,7 +100,7 @@ class HashHandler(APIHandler):
     )
     def post(self):
         client_obj = json.loads(self.request.body)
-        logger = logging.getLogger('generate-hash')
+        logger = logging.getLogger('hashing')
         logger.info('Request body value={}'.format(client_obj))
         response_obj = generate(message=client_obj['message'],
                                 password=client_obj['password'],
