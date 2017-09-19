@@ -11,6 +11,7 @@ from unipath import Path
 from tornado_json import schema
 
 from hash import generate
+from log import LogglyJSONFormatter
 
 STATIC_PATH = Path(Path(__file__).parent, 'static')
 WORKER_PATH = Path(Path(__file__).parent, '')
@@ -32,6 +33,7 @@ class MainHandler(tornado.web.RequestHandler):
         logger.propagate = False
         logger.setLevel(logging.WARNING)
         handler = logging.StreamHandler()
+        handler.setFormatter(LogglyJSONFormatter())
         logger.addHandler(handler)
         return logger
 
@@ -63,6 +65,7 @@ class HashHandler(APIHandler):
         logger.propagate = False
         logger.setLevel(logging.INFO)
         handler = logging.StreamHandler()
+        handler.setFormatter(LogglyJSONFormatter())
         logger.addHandler(handler)
         return logger
 
