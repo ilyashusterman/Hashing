@@ -60,10 +60,10 @@ class HashHandler(APIHandler):
 
     @classmethod
     def setup(cls):
-        logging.basicConfig(level=logging.INFO)
-        logger = logging.getLogger('hashing')
+        logging.basicConfig(level=logging.WARNING)
+        logger = logging.getLogger('hash')
         logger.propagate = False
-        logger.setLevel(logging.INFO)
+        logger.setLevel(logging.WARNING)
         handler = logging.StreamHandler()
         handler.setFormatter(LogglyJSONFormatter())
         logger.addHandler(handler)
@@ -113,8 +113,8 @@ class HashHandler(APIHandler):
     )
     def post(self):
         client_obj = json.loads(self.request.body)
-        logger = logging.getLogger('hashing')
-        logger.info('Request body value={}'.format(client_obj))
+        logger = logging.getLogger('hash')
+        logger.warning('Request body value={}'.format(client_obj))
         response_obj = generate(message=client_obj['message'],
                                 password=client_obj['password'],
                                 salt=client_obj['phrase'],
