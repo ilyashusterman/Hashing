@@ -46,16 +46,6 @@ class MainHandler(tornado.web.RequestHandler):
 class HashHandler(APIHandler):
     HASH_ACTIONS = ['encrypt', 'decrypt']
 
-    @classmethod
-    def setup(cls):
-        logging.basicConfig(level=logging.WARNING)
-        logger = logging.getLogger('hashing')
-        logger.propagate = False
-        logger.setLevel(logging.WARNING)
-        handler = logging.StreamHandler()
-        logger.addHandler(handler)
-        return logger
-
     def set_default_headers(self):
         super(HashHandler, self).set_default_headers()
         # Allow cross-origin Ajax requests (CORS)
@@ -99,8 +89,13 @@ class HashHandler(APIHandler):
         },
     )
     def post(self):
-        client_obj = json.loads(self.request.body)
+        logging.basicConfig(level=logging.WARNING)
         logger = logging.getLogger('hashing')
+        logger.propagate = False
+        logger.setLevel(logging.WARNING)
+        handler = logging.StreamHandler()
+        logger.addHandler(handler)
+        client_obj = json.loads(self.request.body)
         logger.info('Request body value={}'.format(client_obj))
         response_obj = generate(message=client_obj['message'],
                                 password=client_obj['password'],
